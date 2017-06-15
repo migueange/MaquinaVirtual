@@ -61,7 +61,8 @@ def float_to_hex(f):
 	"""
 		Convierte un flotante a hexadecimal
 	"""
-    return hex(struct.unpack('<I', struct.pack('<f', f))[0])[2:]
+	return hex(struct.unpack('<I', struct.pack('<f', f))[0])[2:]
+	
 
 def hex_to_float(h):
 	"""
