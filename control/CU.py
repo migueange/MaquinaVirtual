@@ -18,6 +18,7 @@ class ControlUnit(object):
 
 	def decodifica(self):
 		ciclos = 0
+
 		while True:
 			contadorPrograma =self.registros.getContadorPrograma()
 			byte = self.memoria.getFromIndex(contadorPrograma)
@@ -73,26 +74,22 @@ class ControlUnit(object):
 			elif byte == "09":
 				params = self.getParamsReg4(contadorPrograma)
 				self.alu.orM(params[0],params[1],params[2])
-				self.registros.imprimeRegistros()
 				ciclos += 1
 			#xor
 			elif byte == "0a":
 				params = self.getParamsReg4(contadorPrograma)
 				self.alu.xorM(params[0],params[1],params[2])
-				self.registros.imprimeRegistros()
 				ciclos += 1
 			#not
 			elif byte == "0b":
 				params = self.getParamsReg3(contadorPrograma)
 				self.alu.notM(params[0], params[1])
-				self.registros.imprimeRegistros()
 				ciclos += 1
 			#lb
 			elif byte == "0c":
 				#Obtenemos el valor del registro
 				params = self.getParamsReg3(contadorPrograma)
 				self.alu.lb(params[0], params[1])
-				self.registros.imprimeRegistros()
 				ciclos += 500
 			#lw
 			elif byte == "0d":
@@ -134,7 +131,8 @@ class ControlUnit(object):
 				ciclos += 5
 			#syscall
 			elif byte == "14":
-				print "syscall"
+				self.alu.syscall()
+				self.registros.setContadorPrograma(contadorPrograma+4)
 				ciclos += 50
 			else:
 				print "Código de operación inválido\nCódigo de error: 5"

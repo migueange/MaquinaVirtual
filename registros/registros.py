@@ -29,12 +29,12 @@ class BancoRegistros(object):
 	def getContadorPrograma(self):
 		"""
 			Regrese un entero con la dirección de memoria
-		"""
-		return int(self.registros[13],16)
+		"""		
+		return int(self.registros[12],16)
 
 	def setContadorPrograma(self,direccion):
 		"""
 			Recibe una dirección en decimal y la guarda en el 
 			contador de programa en hexadecimal
 		"""
-		self.registros[13] = hex(direccion)[2:]
+		self.registros[12] = hex(direccion)[2:]

@@ -47,5 +47,18 @@ class MemoriaPrincipal(object):
 			self.insertaEnMemoria(byte);
 			byte = binascii.hexlify(archivoBinario.read(1))
 
+	def getConstantes(self, i):
+		"""
+			Lee las constantes hasta encontrar un caracter nulo \0 o '00'
+		"""
+		if i > self.tamanioInicial or i < 0:			
+			sys.exit(0)
+		constante = ""
+		byte = ""
+		while byte != '00':
+			byte = self.memoria[i]
+			constante += byte
+			i+=1
+		return constante
 
 #end class MemoriaPrincipal

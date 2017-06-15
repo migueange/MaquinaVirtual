@@ -2,12 +2,15 @@
 # -*- coding: utf-8 -*
 
 import sys
+sys.path.append("..")
+from util import util
 
 class ALU(object):
 	"""docstring for ALU"""
-	def __init__(self,bancoRegistros):
+	def __init__(self,bancoRegistros,memoria):
 		super(ALU, self).__init__()
 		self.bancoRegistros = bancoRegistros
+		self.memoria = memoria
 
 	def add(self,numRegDestinoHex,numRegOp1,numRegOp2):
 		"""
@@ -34,7 +37,7 @@ class ALU(object):
 		op1 = self.bancoRegistros.get(int(numRegOp1,16))
 		op2 = self.bancoRegistros.get(int(numRegOp2,16))
 		resta = int(op1,16) - int (op2,16)
-		self.bancoRegistros.actualizaRegistro(int(numRegDestinoHex,16),hex(resta)[2:])
+		self.bancoRegistros.actualizaRegistro(int(numRegDestinoHex,16),hex(resta)[2:])		
 
 	def fsub(self, numRegDestinoHex,numRegOp1,numRegOp2):
 		"""
@@ -129,11 +132,12 @@ class ALU(object):
 		self.bancoRegistros.actualizaRegistro(int,(numRegisDestino,16), hex(lwX)[2:])
 
 	def sw(self,numRegisDestino,numRegOp1):
+		print "sw"
 
 	def li(self,numRegistro, valor):
 		"""
 			Carga una costante en un registro
-		"""
+		"""		
 		self.bancoRegistros.actualizaRegistro(int(numRegistro,16),valor)
 
 	def b(self,numRegistroSaltoHex):
@@ -141,4 +145,51 @@ class ALU(object):
 			Realiza un salto incondicional
 		"""
 		valor = self.bancoRegistros.get(int(numRegistroSaltoHex,16))
-		self.bancoRegistros.actualizaRegistro(13,valor)
+		self.bancoRegistros.setContadorPrograma(int(valor,16))
+
+	def syscall(self):
+		"""
+			Realiza una llamada al sistema
+		"""
+		codigoLlamada = int(self.bancoRegistros.get(8),16)
+		argumentoLlamada = self.bancoRegistros.get(9)		
+		#Leer entero
+		if codigoLlamada == 0:
+			enteroLeido = input()
+			self.bancoRegistros.actualizaRegistro(10,hex(enteroLeido)[2:])
+		#Leer caracter
+		elif codigoLlamada == 1:
+			caracterLeido = raw_input()
+			self.bancoRegistros.actualizaRegistro(10,str(caracterLeido).encode("hex"))
+		#Leer flotante
+		elif codigoLlamada == 2:
+			floatLeido = raw_input()			
+			self.bancoRegistros.actualizaRegistro(10,util.float_to_hex(float(floatLeido)))
+		#Leer cadena
+		elif codigoLlamada == 3:
+			cadenaLeida = raw_input()			
+			self.bancoRegistros.actualizaRegistro(10,cadenaLeida.encode("hex"))
+			self.bancoRegistros.imprimeRegistros()
+		#Escribir entero
+		elif codigoLlamada == 4:			
+			sys.stdout.write(str(int(argumentoLlamada,16)) + "\n")
+			sys.stdout.flush()
+		#Escribir caracter
+		elif codigoLlamada == 5:
+			sys.stdout.write(argumentoLlamada.decode("hex") + "\n")
+			sys.stdout.flush()
+		#Escribir flotante
+		elif codigoLlamada == 6:
+			sys.stdout.write(str(util.hex_to_float(argumentoLlamada)) + "\n")
+			sys.stdout.flush()
+		#Escribir cadena
+		elif codigoLlamada == 7:			
+			cadena = self.memoria.getConstantes(int(argumentoLlamada,16))
+			sys.stdout.write(cadena.decode("hex"))
+			sys.stdout.flush()		
+		#Salir del programa
+		elif codigoLlamada == 8:
+			sys.exit(0)
+		else:
+			print "Código de syscall inválido\nCódigo de error: 6"
+			sys.exit(0)
