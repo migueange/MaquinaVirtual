@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import binascii
+import binascii,struct
 
 #Este archivo contiene métodos que son útiles para todas las clases.
 
@@ -56,3 +56,15 @@ def getTotalBytes(rutaArchivo):
 	except IOError:
 		print "Ocurrió un error al leer el archivo o el archivo no existe"
 		sys.exit(0)	
+
+def float_to_hex(f):
+	"""
+		Convierte un flotante a hexadecimal
+	"""
+    return hex(struct.unpack('<I', struct.pack('<f', f))[0])[2:]
+
+def hex_to_float(h):
+	"""
+		Convierte un hexadecimal a un flotante
+	"""
+	return round(struct.unpack('!f', h.decode('hex'))[0],2)
