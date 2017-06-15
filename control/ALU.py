@@ -25,10 +25,10 @@ class ALU(object):
 		"""
 			Suma el valor de dos registros flotantes y lo almacena en numRegDestinoHex
 		"""
-		op1 = self.bancoRegistros.get(float(numRegOp1,16))
-		op1 = self.bancoRegistros.get(float(numRegOp1,16))
-		suma = float(op1,16) + float (op2,16)
-		self.bancoRegistros.actualizaRegistro(float(numRegDestinoHex,16), hex(suma)[2:])
+		op1 = self.bancoRegistros.get(hex_to_float(numRegOp1))
+		op1 = self.bancoRegistros.get(hex_to_float(numRegOp1))
+		suma = op1 + op2
+		self.bancoRegistros.actualizaRegistro(float_to_hex(numRegDestinoHex), hex_to_float(suma))
 
 	def sub(self,numRegDestinoHex,numRegOp1,numRegOp2):
 		"""
@@ -43,10 +43,10 @@ class ALU(object):
 		"""
 			Resta el valor de dos registros flotantes y lo almacena en numRegDestinoHe
 		"""
-		op1 = self.bancoRegistros.get(float(numRegOp1,16))
-		op2 = self.bancoRegistros.get(float(numRegOp2,16))
-		resta = float(op1,16) - float(op2,16)
-		self.bancoRegistros.actualizaRegistro(int(numRegDestinoHex,16),hex(resta)[2:])
+		op1 = self.bancoRegistros.get(hex_to_float(numRegOp1))
+		op2 = self.bancoRegistros.get(hex_to_float(numRegOp2))
+		resta = op1 - op2
+		self.bancoRegistros.actualizaRegistro(hex_to_float(numRegDestinoHex),float_to_hex(resta))
 
 	def mul(self,numRegDestinoHex,numRegOp1,numRegOp2):
 		"""
@@ -61,10 +61,10 @@ class ALU(object):
 		"""
 			Multiplica el valor de los registros flotantes y lo almacena en numRegDestinoHex
 		"""
-		op1 = self.bancoRegistros.get(float(numRegOp1,16))
-		op2 = self.bancoRegistros.get(float(numRegOp2,16))
-		mult = float(op1,16) * float (op2,16)
-		self.bancoRegistros.actualizaRegistro(int(numRegDestinoHex,16), hex(mult)[2:])
+		op1 = self.bancoRegistros.get(float_to_hex(numRegOp1))
+		op2 = self.bancoRegistros.get(float_to_hex(numRegOp2))
+		mult = op1 * op2
+		self.bancoRegistros.actualizaRegistro(float_to_hex(numRegDestinoHex), hex_to_float(mult))
 
 	def div(self,numRegDestinoHex,numRegOp1,numRegOp2):
 		"""
@@ -82,13 +82,13 @@ class ALU(object):
 		"""
 			Divide el valor de dos registros flotantes y lo almacena en numRegDestinoHex
 		"""
-		op1 = self.bancoRegistros.get(float(numRegOp1,16))
-		op2 = self.bancoRegistros.get(float(numRegOp2,16))
-		if float(op2,16) == 0.0:
+		op1 = self.bancoRegistros.get(hex_to_float(numRegOp1))
+		op2 = self.bancoRegistros.get(hex_to_float(numRegOp2))
+		if hex_to_float(op2) == 0.0:
 			print "Division entre cero \nCódigo de error: 1"
 			sys.exit(0)
-		division = float (float(op1,16) / float (op2,16))
-		self.bancoRegistros.actualizaRegistro(int(numRegDestinoHex,16),hex(division)[2:])
+		division = op1 / op2
+		self.bancoRegistros.actualizaRegistro(float_to_hex(numRegDestinoHex),float_to_hex(division))
 
 	def andM(self,numRegDestinoHex,numRegOp1,numRegOp2):
 		"""
@@ -133,6 +133,7 @@ class ALU(object):
 
 	def sw(self,numRegisDestino,numRegOp1):
 		print "sw"
+		print "Sin hacer aun"
 
 	def li(self,numRegistro, valor):
 		"""
