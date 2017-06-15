@@ -10,7 +10,7 @@ def getParametros(argv):
 	"""
 		Obtiene los parámetros de la línea de comandos
 	"""
-	if len(argv) <= 1 or len(argv) > 4:		
+	if len(argv) <= 1 or len(argv) > 4:
 		print "No se especificó un archivo binario"
 		sys.exit(0)
 	tamanioMemoria = 0
@@ -21,8 +21,8 @@ def getParametros(argv):
 			rutaArchivo = argv[3]
 		except ValueError:
 			print "Error: Ingrese un valor válido de tamaño de memoria principal"
-			sys.exit(0)		
-		except IndexError:			
+			sys.exit(0)
+		except IndexError:
 			print "No se especificó un archivo binario"
 			sys.exit(0)
 	else:
@@ -38,10 +38,10 @@ def leeArchivoBinario(rutaArchivo):
 		Lee un archivo en modo binario
 	"""
 	try:
-		return open(rutaArchivo,"rb")		
+		return open(rutaArchivo,"rb")
 	except IOError:
 		print "Ocurrió un error al leer el archivo o el archivo no existe"
-		sys.exit(0)		
+		sys.exit(0)
 
 def getTotalBytes(rutaArchivo):
 	i = 0
@@ -55,13 +55,13 @@ def getTotalBytes(rutaArchivo):
 		return i
 	except IOError:
 		print "Ocurrió un error al leer el archivo o el archivo no existe"
-		sys.exit(0)	
+		sys.exit(0)
 
 def float_to_hex(f):
 	"""
 		Convierte un flotante a hexadecimal
 	"""
-    return hex(struct.unpack('<I', struct.pack('<f', f))[0])[2:]
+	return hex(struct.unpack('<I', struct.pack('<f', f))[0],2)
 
 def hex_to_float(h):
 	"""
