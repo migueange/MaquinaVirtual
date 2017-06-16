@@ -93,8 +93,12 @@ class ControlUnit(object):
 				ciclos += 500
 			#lw
 			elif byte == "0d":
-				print "lw"
-				ciclos += 1500
+				#Obtener registro de la memoria
+				registroMemoria = self.memoria.getFromIndex(contadorPrograma + 2)
+				registroDestino = self.getFromIndex(contadorPrograma +1)
+
+				self.alu.lw(registroMemoria, registroDestino)
+
 			#sb
 			elif byte == "0e":
 				print "sb"
@@ -146,7 +150,7 @@ class ControlUnit(object):
 		self.registros.setContadorPrograma(contadorPrograma+4)
 		return [regDestino,regOp1,regOp2]
 
-	def getParamsReg3(self, contradorPrograma):
+	def getParamsReg3(self, contadorPrograma):
 		regDestino = self.memoria.getFromIndex(contadorPrograma +1)
 		regOp1 = self.memoria.getFromIndex(contadorPrograma+2)
 		self.registros.setContadorPrograma(contadorPrograma+3)
