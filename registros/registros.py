@@ -8,7 +8,7 @@ class BancoRegistros(object):
 		super(BancoRegistros, self).__init__()		
 		self.registros = []
 		for x in xrange(0,14):
-			self.registros.append('00')
+			self.registros.append('0x00')
 
 	def imprimeRegistros(self):
 		print self.registros
@@ -37,11 +37,11 @@ class BancoRegistros(object):
 			Recibe una dirección en decimal y la guarda en el 
 			contador de programa en hexadecimal
 		"""
-		self.registros[12] = hex(direccion)[2:]
+		self.registros[12] = hex(direccion)
 
 	def setStackPointer(self,direccion):
 		"""
 			Recibe una dirección en decimal y la guarda en el 
 			stack pointer en hexadecimal
 		"""
-		self.registros[13] = hex(direccion)[2:]
+		self.registros[13] = hex(direccion)

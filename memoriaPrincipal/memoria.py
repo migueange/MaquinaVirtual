@@ -28,11 +28,26 @@ class MemoriaPrincipal(object):
 		self.ultima_posicion_inicio+=1
 		self.espacios_vacios-=1;
 
+	def insertaEnIndice(self,byte,indice):		
+		if self.espacios_vacios <= 0 or indice > self.tamanioInicial:
+			print "Memoria Agotada\nCódigo de error: 3"
+			sys.exit(0)
+		self.memoria[indice] = byte
+		self.espacios_vacios-=1;
+
 	def getUltimoIndice(self):
 		return self.tamanioInicial - 1
 
 	def imprimeMemoria(self):
 			print self.memoria
+
+	def imprimeMemoriaArchivo(self):
+		str = ""
+		for x in xrange(0,self.tamanioInicial):
+			str += self.memoria[x] + "\n" if self.memoria[x] != None else "None\n"
+		f = open("memoria.txt","w")
+		f.write(str)
+		f.close()
 
 	def get(inicio,fin):
 		if(fin > inicio):
@@ -47,7 +62,7 @@ class MemoriaPrincipal(object):
 	def cargaInstrucciones(self,archivoBinario):
 		byte = binascii.hexlify(archivoBinario.read(1))
 		while byte != "":
-			self.insertaEnMemoria(byte);
+			self.insertaEnMemoria("0x" + byte);
 			byte = binascii.hexlify(archivoBinario.read(1))
 
 	def getConstantes(self, i):
@@ -58,9 +73,9 @@ class MemoriaPrincipal(object):
 			sys.exit(0)
 		constante = ""
 		byte = ""
-		while byte != '00':
+		while byte != '0x00':
 			byte = self.memoria[i]
-			constante += byte
+			constante += byte[2:]
 			i+=1
 		return constante
 

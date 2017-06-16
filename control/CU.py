@@ -18,13 +18,14 @@ class ControlUnit(object):
 
 	def decodifica(self):
 		ciclos = 0
-		self.registros.setStackPointer(self.memoria.getUltimoIndice());
+		self.registros.setStackPointer(self.memoria.getUltimoIndice())
 		while True:
 			contadorPrograma =self.registros.getContadorPrograma()
 			byte = self.memoria.getFromIndex(contadorPrograma)
 			if byte == None:
 				print ciclos
 				break;
+			byte = str(self.memoria.getFromIndex(contadorPrograma)[2:])
 			#add
 			if byte == "00":
 				params = self.getParamsReg4(contadorPrograma)
@@ -87,34 +88,30 @@ class ControlUnit(object):
 				ciclos += 1
 			#lb
 			elif byte == "0c":
-				#Obtenemos el valor del registro
 				params = self.getParamsReg3(contadorPrograma)
 				self.alu.lb(params[0], params[1])
 				ciclos += 500
 			#lw
 			elif byte == "0d":
-				#Obtener registro de la memoria
-				registroMemoria = self.memoria.getFromIndex(contadorPrograma + 3)
-				registroDestino = self.memoria.getFromIndex(contadorPrograma +1)
-				self.alu.lw(registroDestino, registroMemoria)
-				self.registros.setContadorPrograma(contadorPrograma+4)
+				params = self.getParamsReg3(contadorPrograma)
+				self.alu.lw(params[0], params[1])
 				ciclos += 1500
-				self.memoria.imprimeMemoria()
-				self.registros.imprimeRegistros()
 			#sb
 			elif byte == "0e":
-				print "sb"
+				params = self.getParamsReg3(contadorPrograma)
+				self.alu.sb(params[0], params[1])
 				ciclos += 700
 			#sw
 			elif byte == "0f":
-				print "sw"
+				params = self.getParamsReg3(contadorPrograma)
+				self.alu.sw(params[0], params[1])
 				ciclos += 2100
 			#li
 			elif byte == "10":
 				#Obtener el registro destino del siguiente byte
 				registroDestino = self.memoria.getFromIndex(contadorPrograma+1)
 				#Obtener la constante a guardar de los siguientes 4 bytes
-				valor = self.memoria.getFromIndex(contadorPrograma+2) + self.memoria.getFromIndex(contadorPrograma+3) + self.memoria.getFromIndex(contadorPrograma+4) + self.memoria.getFromIndex(contadorPrograma+5)
+				valor = self.memoria.getFromIndex(contadorPrograma+2) + self.memoria.getFromIndex(contadorPrograma+3)[2:] + self.memoria.getFromIndex(contadorPrograma+4)[2:] + self.memoria.getFromIndex(contadorPrograma+5)[2:]
 				#Ejecutar li
 				self.alu.li(registroDestino,valor)
 				#Actualizar el contador de programa
@@ -124,16 +121,21 @@ class ControlUnit(object):
 			elif byte == "11":
 				#Obtener el registro que tiene la dirección del salto
 				registroSalto = self.memoria.getFromIndex(contadorPrograma + 3)
-				#Ejecutar b
+				#Ejecutar b			
 				self.alu.b(registroSalto)
 				ciclos += 1
 			#beqz
 			elif byte == "12":
-				print "beqz"
+				#Obtener el registro que tiene la dirección del salto
+				registroSalto = self.memoria.getFromIndex(contadorPrograma + 1)
+				registroCondicion = self.memoria.getFromIndex(contadorPrograma + 3)
+				self.alu.beqz(registroSalto,registroCondicion,contadorPrograma)
 				ciclos += 4
 			#bltz
 			elif byte == "13":
-				print "bltz"
+				registroSalto = self.memoria.getFromIndex(contadorPrograma + 1)
+				registroCondicion = self.memoria.getFromIndex(contadorPrograma + 3)
+				self.alu.bltz(registroSalto,registroCondicion,contadorPrograma)				
 				ciclos += 5
 			#syscall
 			elif byte == "14":
@@ -142,6 +144,7 @@ class ControlUnit(object):
 				ciclos += 50
 			else:
 				print "Código de operación inválido\nCódigo de error: 5"
+				sys.exit(0)
 		#end while
 	#end decodifica
 
@@ -154,6 +157,6 @@ class ControlUnit(object):
 
 	def getParamsReg3(self, contadorPrograma):
 		regDestino = self.memoria.getFromIndex(contadorPrograma +1)
-		regOp1 = self.memoria.getFromIndex(contadorPrograma+2)
-		self.registros.setContadorPrograma(contadorPrograma+3)
+		regOp1 = self.memoria.getFromIndex(contadorPrograma+3)
+		self.registros.setContadorPrograma(contadorPrograma+4)
 		return [regDestino,regOp1]

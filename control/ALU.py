@@ -19,7 +19,7 @@ class ALU(object):
 		op1 = self.bancoRegistros.get(int(numRegOp1,16))
 		op2 = self.bancoRegistros.get(int(numRegOp2,16))
 		suma = int(op1,16) + int (op2,16)
-		self.bancoRegistros.actualizaRegistro(int(numRegDestinoHex,16),hex(suma)[2:])
+		self.bancoRegistros.actualizaRegistro(int(numRegDestinoHex,16),hex(suma))
 
 	def fadd(self,numRegDestinoHex, numRegOp1, numRegOp2):
 		"""
@@ -37,7 +37,7 @@ class ALU(object):
 		op1 = self.bancoRegistros.get(int(numRegOp1,16))
 		op2 = self.bancoRegistros.get(int(numRegOp2,16))
 		resta = int(op1,16) - int (op2,16)
-		self.bancoRegistros.actualizaRegistro(int(numRegDestinoHex,16),hex(resta)[2:])
+		self.bancoRegistros.actualizaRegistro(int(numRegDestinoHex,16),hex(resta))
 
 	def fsub(self, numRegDestinoHex,numRegOp1,numRegOp2):
 		"""
@@ -55,7 +55,7 @@ class ALU(object):
 		op1 = self.bancoRegistros.get(int(numRegOp1,16))
 		op2 = self.bancoRegistros.get(int(numRegOp2,16))
 		mult = int(op1,16) * int (op2,16)
-		self.bancoRegistros.actualizaRegistro(int(numRegDestinoHex,16),hex(mult)[2:])
+		self.bancoRegistros.actualizaRegistro(int(numRegDestinoHex,16),hex(mult))
 
 	def fmul(self, numRegDestinoHex,numRegOp1,numRegOp2):
 		"""
@@ -74,9 +74,10 @@ class ALU(object):
 		op2 = self.bancoRegistros.get(int(numRegOp2,16))
 		if int(op2,16) == 0:
 			print "División entre cero\nCódigo de error: 1"
+			self.memoria.imprimeMemoriaArchivo()
 			sys.exit(0)
 		division = int (int(op1,16) / int (op2,16))
-		self.bancoRegistros.actualizaRegistro(int(numRegDestinoHex,16),hex(division)[2:])
+		self.bancoRegistros.actualizaRegistro(int(numRegDestinoHex,16),hex(division))
 
 	def fdiv(self,numRegDestinoHex,numRegOp1,numRegOp2):
 		"""
@@ -96,8 +97,8 @@ class ALU(object):
 		"""
 		op1 = int(self.bancoRegistros.get(int(numRegOp1,16)),16)
 		op2 = int(self.bancoRegistros.get(int(numRegOp2,16)),16)
-		andR = int(bin(op1)[2:],2) & int(bin(op2)[2:],2)
-		self.bancoRegistros.actualizaRegistro(int(numRegDestinoHex,16),hex(andR)[2:])
+		andR = int(bin(op1),2) & int(bin(op2),2)
+		self.bancoRegistros.actualizaRegistro(int(numRegDestinoHex,16),hex(andR))
 
 	def orM(self,numRegDestinoHex,numRegOp1,numRegOp2):
 		"""
@@ -105,8 +106,8 @@ class ALU(object):
 		"""
 		op1 = int(self.bancoRegistros.get(int(numRegOp1,16)),16)
 		op2 = int(self.bancoRegistros.get(int(numRegOp2,16)),16)
-		orR = int(bin(op1)[2:],2) | int(bin(op2)[2:],2)
-		self.bancoRegistros.actualizaRegistro(int(numRegDestinoHex,16),hex(orR)[2:])
+		orR = int(bin(op1),2) | int(bin(op2),2)
+		self.bancoRegistros.actualizaRegistro(int(numRegDestinoHex,16),hex(orR))
 
 	def xorM(self,numRegDestinoHex,numRegOp1,numRegOp2):
 		"""
@@ -114,16 +115,23 @@ class ALU(object):
 		"""
 		op1 = int(self.bancoRegistros.get(int(numRegOp1,16)),16)
 		op2 = int(self.bancoRegistros.get(int(numRegOp2,16)),16)
-		xorR = int(bin(op1)[2:],2) ^ int(bin(op2)[2:],2)
-		self.bancoRegistros.actualizaRegistro(int(numRegDestinoHex,16),hex(xorR)[2:])
+		xorR = int(op1) ^ int(op2)
+		self.bancoRegistros.actualizaRegistro(int(numRegDestinoHex,16),hex(xorR))
 
 	def notM(self, numRegDestinoHex, numRegOp1):
-		op1 = int(self.bancoRegistros.get(int(numRegOp1,16)),16)
-		notR = not int(bin(op1)[2:],2)
-		self.bancoRegistros.actualizaRegistro(int(numRegDestinoHex,16), hex(notR)[2:])
+		"""
+			Realiza la operación not a nivel bits
+		"""
+		op1 = int(self.bancoRegistros.get(int(numRegOp1,16)),16)	
+		notR = ~op1
+		self.bancoRegistros.actualizaRegistro(int(numRegDestinoHex,16), hex(notR))
 
 
 	def lb(self,numRegisDestino, numRegOp1):
+		"""
+			Carga un byte en algún registro
+		"""
+		valor = self.memoria.getFromIndex(int(numRegOp1,16))
 		self.bancoRegistros.actualizaRegistro(int(numRegisDestino,16),valor)
 
 	def lw(self, numRegisDestino,registroMemoria):
@@ -133,8 +141,20 @@ class ALU(object):
 		valorEnMemoria = self.memoria.getFromIndex(int(registroMemoria,16))
 		self.bancoRegistros.actualizaRegistro(int(numRegisDestino,16),valorEnMemoria)
 
-	def sw(self,numRegisDestino,numRegOp1):
-		print "nada"
+	def sb(self,numRegOp1,numRegOp2):
+		"""
+			Guarda el valor de numRegOp1 en la dirección guardada en numRegOp2
+		"""
+		valor = self.bancoRegistros.get(int(numRegOp1,16))
+		direccion = int(self.bancoRegistros.get(int(numRegOp2,16)),16)
+		self.memoria.insertaEnIndice(valor,direccion)
+
+	def sw(self,numRegOp1,numRegOp2):
+		"""
+		"""
+		valor = self.bancoRegistros.get(int(numRegOp1,16))
+		direccion = int(self.bancoRegistros.get(int(numRegOp2,16)),16)
+		self.memoria.insertaEnIndice(valor,direccion)		
 
 
 	def li(self,numRegistro, valor):
@@ -147,8 +167,29 @@ class ALU(object):
 		"""
 			Realiza un salto incondicional
 		"""
-		valor = self.bancoRegistros.get(int(numRegistroSaltoHex,16))
+		valor = self.bancoRegistros.get(int(numRegistroSaltoHex,16))		
 		self.bancoRegistros.setContadorPrograma(int(valor,16))
+
+	def beqz(self,numRegistroSaltoHex,registroCondicion,cp):
+		"""
+			Si reggistroCOndicion == 0 se  salta a numregistro
+		"""
+		valor = int(self.bancoRegistros.get(int(registroCondicion,16)),16)
+		if valor == 0:
+			self.b(numRegistroSaltoHex)
+		else:
+			self.bancoRegistros.setContadorPrograma(cp + 4)
+
+	def bltz(self,numRegistroSaltoHex,registroCondicion,cp):
+		"""
+			Si reggistroCOndicion < 0 se  salta a numregistro
+		"""
+		valor = int(self.bancoRegistros.get(int(registroCondicion,16)),16)
+		if valor < 0:
+			self.b(numRegistroSaltoHex)
+		else:
+			self.bancoRegistros.setContadorPrograma(cp + 4)
+
 
 	def syscall(self,ciclos):
 		"""
@@ -159,7 +200,7 @@ class ALU(object):
 		#Leer entero
 		if codigoLlamada == 0:
 			enteroLeido = input()
-			self.bancoRegistros.actualizaRegistro(10,hex(enteroLeido)[2:])
+			self.bancoRegistros.actualizaRegistro(10,hex(enteroLeido))
 		#Leer caracter
 		elif codigoLlamada == 1:
 			caracterLeido = raw_input()
@@ -178,7 +219,9 @@ class ALU(object):
 			sys.stdout.flush()
 		#Escribir caracter
 		elif codigoLlamada == 5:
-			sys.stdout.write(argumentoLlamada.decode("hex") + "\n")
+			if argumentoLlamada == "0x0":
+				argumentoLlamada = "0x00"			
+			sys.stdout.write(argumentoLlamada[2:].strip().decode("hex") + "\n")
 			sys.stdout.flush()
 		#Escribir flotante
 		elif codigoLlamada == 6:
