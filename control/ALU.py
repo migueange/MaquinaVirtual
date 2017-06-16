@@ -147,7 +147,7 @@ class ALU(object):
 		valor = self.bancoRegistros.get(int(numRegistroSaltoHex,16))
 		self.bancoRegistros.setContadorPrograma(int(valor,16))
 
-	def syscall(self):
+	def syscall(self,ciclos):
 		"""
 			Realiza una llamada al sistema
 		"""
@@ -169,7 +169,6 @@ class ALU(object):
 		elif codigoLlamada == 3:
 			cadenaLeida = raw_input()
 			self.bancoRegistros.actualizaRegistro(10,cadenaLeida.encode("hex"))
-			self.bancoRegistros.imprimeRegistros()
 		#Escribir entero
 		elif codigoLlamada == 4:
 			sys.stdout.write(str(int(argumentoLlamada,16)) + "\n")
@@ -189,6 +188,7 @@ class ALU(object):
 			sys.stdout.flush()
 		#Salir del programa
 		elif codigoLlamada == 8:
+			print (ciclos + 50)
 			sys.exit(0)
 		else:
 			print "Código de syscall inválido\nCódigo de error: 6"

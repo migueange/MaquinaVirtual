@@ -18,7 +18,7 @@ class ControlUnit(object):
 
 	def decodifica(self):
 		ciclos = 0
-
+		self.registros.setStackPointer(self.memoria.getUltimoIndice());
 		while True:
 			contadorPrograma =self.registros.getContadorPrograma()
 			byte = self.memoria.getFromIndex(contadorPrograma)
@@ -135,7 +135,7 @@ class ControlUnit(object):
 				ciclos += 5
 			#syscall
 			elif byte == "14":
-				self.alu.syscall()
+				self.alu.syscall(ciclos)
 				self.registros.setContadorPrograma(contadorPrograma+4)
 				ciclos += 50
 			else:

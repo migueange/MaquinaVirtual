@@ -28,6 +28,9 @@ class MemoriaPrincipal(object):
 		self.ultima_posicion_inicio+=1
 		self.espacios_vacios-=1;
 
+	def getUltimoIndice(self):
+		return self.tamanioInicial - 1
+
 	def imprimeMemoria(self):
 			print self.memoria
 

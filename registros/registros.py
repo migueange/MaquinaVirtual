@@ -38,3 +38,10 @@ class BancoRegistros(object):
 			contador de programa en hexadecimal
 		"""
 		self.registros[12] = hex(direccion)[2:]
+
+	def setStackPointer(self,direccion):
+		"""
+			Recibe una dirección en decimal y la guarda en el 
+			stack pointer en hexadecimal
+		"""
+		self.registros[13] = hex(direccion)[2:]

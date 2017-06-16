@@ -14,9 +14,12 @@ def main():
 	parametros = util.getParametros(sys.argv)	
 	archivoBinario = util.leeArchivoBinario(parametros[1]);	
 	#Crear componentes de la máquina
+	#Crear memoria 
 	memoriaPrincipal = memoria.MemoriaPrincipal(parametros[0])	
+	#Cargar programa en memoria
 	memoriaPrincipal.cargaInstrucciones(archivoBinario)
 	archivoBinario.close()
+	#Crear registros
 	bancoRegistros = registros.BancoRegistros()
 	alu = ALU.ALU(bancoRegistros,memoriaPrincipal)
 	cu = CU.ControlUnit(memoriaPrincipal,bancoRegistros,alu)
