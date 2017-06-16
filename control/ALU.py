@@ -126,14 +126,13 @@ class ALU(object):
 	def lb(self,numRegisDestino, numRegOp1):
 		self.bancoRegistros.actualizaRegistro(int(numRegisDestino,16),valor)
 
-	def lw(self, numRegisDestino,numRegOp1):
-		op1 = self.bancoRegistros.get(int(numRegOp1,16))
-		lwX = numRegOp1
-		self.bancoRegistros.actualizaRegistro(int,(numRegisDestino,16), hex(lwX)[2:])
+	def lw(self, numRegisDestino,registroMemoria):
+
+		self.bancoRegistros.actualizaRegistro(int (numRegisDestino,16),registroMemoria)
 
 	def sw(self,numRegisDestino,numRegOp1):
-		print "sw"
-		print "Sin hacer aun"
+		
+
 
 	def li(self,numRegistro, valor):
 		"""
