@@ -127,11 +127,11 @@ class ALU(object):
 		self.bancoRegistros.actualizaRegistro(int(numRegisDestino,16),valor)
 
 	def lw(self, numRegisDestino,registroMemoria):
-
-		self.bancoRegistros.actualizaRegistro(int (numRegisDestino,16),registroMemoria)
+		valorEnMemoria = self.memoria.getFromIndex(int(registroMemoria,16))
+		self.bancoRegistros.actualizaRegistro(int(numRegisDestino,16),valorEnMemoria)
 
 	def sw(self,numRegisDestino,numRegOp1):
-		
+		print "nada"
 
 
 	def li(self,numRegistro, valor):

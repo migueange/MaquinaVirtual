@@ -94,11 +94,13 @@ class ControlUnit(object):
 			#lw
 			elif byte == "0d":
 				#Obtener registro de la memoria
-				registroMemoria = self.memoria.getFromIndex(contadorPrograma + 2)
-				registroDestino = self.getFromIndex(contadorPrograma +1)
-
-				self.alu.lw(registroMemoria, registroDestino)
-
+				registroMemoria = self.memoria.getFromIndex(contadorPrograma + 3)
+				registroDestino = self.memoria.getFromIndex(contadorPrograma +1)
+				self.alu.lw(registroDestino, registroMemoria)
+				self.registros.setContadorPrograma(contadorPrograma+4)
+				ciclos += 1500
+				self.memoria.imprimeMemoria()
+				self.registros.imprimeRegistros()
 			#sb
 			elif byte == "0e":
 				print "sb"
