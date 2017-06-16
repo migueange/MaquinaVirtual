@@ -127,6 +127,9 @@ class ALU(object):
 		self.bancoRegistros.actualizaRegistro(int(numRegisDestino,16),valor)
 
 	def lw(self, numRegisDestino,registroMemoria):
+		"""
+			Carga una localidad de memoria en algún registro
+		"""
 		valorEnMemoria = self.memoria.getFromIndex(int(registroMemoria,16))
 		self.bancoRegistros.actualizaRegistro(int(numRegisDestino,16),valorEnMemoria)
 
