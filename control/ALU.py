@@ -211,8 +211,28 @@ class ALU(object):
 			self.bancoRegistros.actualizaRegistro(10,util.float_to_hex(float(floatLeido)))
 		#Leer cadena
 		elif codigoLlamada == 3:
+			#Leer cadena
 			cadenaLeida = raw_input()
-			self.bancoRegistros.actualizaRegistro(10,cadenaLeida.encode("hex"))
+			#Número de caracteres leídos 
+			numCaracteres = len(cadenaLeida)
+			#Sacar dirección donde se va a guardar
+			direccionMemoria = int(argumentoLlamada,16)			
+			#Codificar en hexadecimal
+			cadenaLeidaHex = cadenaLeida.encode("hex")
+			i = 0
+			byte = "0x"
+			#Insertar byte por byte en memoria
+			for c in cadenaLeidaHex:
+				byte += c
+				if i % 2 != 0:
+					self.memoria.insertaEnIndice(byte,direccionMemoria)
+					byte = "0x"
+					direccionMemoria+=1
+				i+=1
+			#Se inserta al final la cadena eñ termino de cadena \0 o '0x00'
+			self.memoria.insertaEnIndice("0x00",direccionMemoria)
+			#Se regresa el número de caracteres leídos en registro 10
+			self.bancoRegistros.actualizaRegistro(10,hex(numCaracteres))			
 		#Escribir entero
 		elif codigoLlamada == 4:
 			sys.stdout.write(str(int(argumentoLlamada,16)) + "\n")
